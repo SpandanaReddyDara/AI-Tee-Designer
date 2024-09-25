@@ -1,18 +1,22 @@
 import express from "express";
-import * as dotenv from "dotenv";
 import cors from "cors";
+import sdiffusionRoutes from "./routes/sdiffusion.routes.js";
+import * as dotenv from "dotenv";
 
 dotenv.config();
 
 const app = express();
-app.use(cors());
-app.use(express.json({ limit: "50MB" }));
-app.get("/", (req, res) => {
-  res.status(200).json({
-    message: "Hello from Spandana",
-  });
-});
 
-app.listen(8080, () => {
-  console.log("Server has started on 8080");
-});
+app.use(
+  cors({
+    origin: ["https://t-customizer.vercel.app"],
+    methods: "GET,POST,PUT,DELETE,OPTIONS",
+    allowedHeaders: "Content-Type,Authorization",
+  })
+);
+app.options("*", cors());
+app.use(express.json({ limit: "50mb" }));
+app.use("/api/sdiffusion", sdiffusionRoutes);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log("Server has started on port ${PORT}"));
